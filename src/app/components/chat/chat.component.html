@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
     <head>
         <meta
@@ -6,7 +6,6 @@
             content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
         />
         <title>Bingo Gran Buda</title>
-        <link rel="stylesheet" href="/css/main.css" />
     </head>
     <body>
         <div id="chat-page" class="hidden">
@@ -26,15 +25,75 @@
                                 autocomplete="off"
                                 class="form-control"
                             />
+                            <button
+                                type="submit"
+                                class="primary"
+                                (click)="sendMessage()"
+                            >
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+        />
+        <title>WebSocket Chat App</title>
+    </head>
+    <body>
+        <div id="chat-page">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>WebSocket Chat Demo - By Exloz</h2>
+                </div>
+
+                <!-- Área para mostrar mensajes -->
+                <ul class="message-area">
+                    <li
+                        *ngFor="let message of messages"
+                        [ngClass]="{
+                            'event-message':
+                                message.type === 'JOIN' ||
+                                message.type === 'LEAVE',
+                            'chat-message': message.type === 'CHAT'
+                        }"
+                    >
+                        <span>{{ message.sender }}</span
+                        >: {{ message.content }}
+                    </li>
+                </ul>
+
+                <!-- Formulario para enviar mensajes -->
+                <form
+                    id="messageForm"
+                    name="messageForm"
+                    (submit)="sendMessage(); $event.preventDefault()"
+                >
+                    <div class="form-group">
+                        <div class="input-group clearfix">
+                            <input
+                                type="text"
+                                id="message"
+                                name="messageInput"
+                                placeholder="Type a message..."
+                                autocomplete="off"
+                                [(ngModel)]="messageContent"
+                                class="form-control"
+                            />
                             <button type="submit" class="primary">Send</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="/js/main.js"></script> -->
     </body>
 </html>
