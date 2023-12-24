@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import SockJS from 'sockjs-client';
-import { Client } from '@stomp/stompjs';
+import { ChatService } from '../../services/chat.service';
+import { ChatMessage } from '../../models/chat-message';
 
 @Component({
     selector: 'app-chat',
@@ -9,18 +9,18 @@ import { Client } from '@stomp/stompjs';
     templateUrl: './chat.component.html',
     styleUrl: './chat.component.css',
 })
-export class ChatComponent {
-    private stompClient: any = null;
-    public userName: string = '';
-    private colors: string[] = [
-        '#2196F3',
-        '#32c787',
-        '#00BCD4',
-        '#ff5652',
-        '#ffc107',
-        '#ff85af',
-        '#FF9800',
-        '#39bbb0',
-    ];
+export class ChatComponent implements OnInit {
+    constructor(private chatService: ChatService) {}
 
+    ngOnInit(): void {
+        this.chatService.joinGameSet('ABC');
+    }
+
+    sendMessage() {
+        const ChatMessage = {
+            message: 'Hola',
+            user: '1',
+        } as ChatMessage;
+        this.chatService.sendMessage('ABC', ChatMessage);
+    }
 }
