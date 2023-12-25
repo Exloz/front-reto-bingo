@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div class="chat-container">
+            <!-- Formulario para ingresar el nombre de usuario (si se requiere) -->
+
+            <form (ngSubmit)="onSubmit()">
+                <input
+                    type="text"
+                    [(ngModel)]="userName"
+                    name="userName"
+                    placeholder="Enter your username..."
+                    required
+                />
+                <button type="submit">Enter</button>
+            </form>
+        </div>
+    </body>
+</html>

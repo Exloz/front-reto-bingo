@@ -1,15 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { AuthService } from '../../shared/services/auth.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
     selector: 'app-chat',
     standalone: true,
-    imports: [FormsModule, CommonModule],
+    imports: [
+        FormsModule,
+        CommonModule,
+        MatSlideToggleModule,
+        MatToolbarModule,
+    ],
     templateUrl: './chat.component.html',
     styleUrl: './chat.component.css',
 })
@@ -17,7 +24,7 @@ export class ChatComponent implements OnInit {
     private _router = inject(Router);
     private authservice = inject(AuthService);
     private stompClient!: Client;
-    public userName: string = 'Exloz';
+    public userName: string = '';
     public messageContent: string = '';
     public messages: any[] = [];
     private colors: string[] = [
@@ -31,8 +38,14 @@ export class ChatComponent implements OnInit {
         '#39bbb0',
     ];
 
+    constructor(private route: ActivatedRoute) {}
+
     ngOnInit(): void {
         this.connect();
+
+        this.route.queryParams.subscribe((params) => {
+            this.userName = params['user'];
+        });
     }
 
     connect(): void {
@@ -82,10 +95,11 @@ export class ChatComponent implements OnInit {
         const message = JSON.parse(payload.body);
 
         if (message.type === 'JOIN') {
-            message.content = message.sender + ' joined!';
+            message.content = ' ingreso al bingo!';
         } else if (message.type === 'LEAVE') {
-            message.content = message.sender + ' left!';
+            message.content = ' abandono!';
         }
+        console.log(message);
 
         this.messages.push(message);
     }
@@ -102,7 +116,7 @@ export class ChatComponent implements OnInit {
     async logOut(): Promise<void> {
         try {
             await this.authservice.logOut();
-            this._router.navigateByUrl('/auth/log-in');
+            this._router.navigateByUrl('/login');
         } catch (error) {
             console.log(error);
         }

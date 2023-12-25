@@ -10,6 +10,11 @@ body {
     overflow: hidden;
 }
 
+mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -288,4 +293,18 @@ button.accent {
 mat-toolbar {
     display: flex;
     justify-content: space-between;
+}
+
+.container {
+    display: flex;
+}
+#info-page {
+    width: 50%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#chat-page {
+    width: 50%;
+    padding: 10px;
+    box-sizing: border-box;
 }

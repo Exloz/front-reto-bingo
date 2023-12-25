@@ -1,61 +1,54 @@
-<!DOCTYPE html>
-<!-- <mat-toolbar color="accent">
+<mat-toolbar color="accent">
     <span>Lobby Bingo Game</span>
+
     <button mat-flat-button (click)="logOut()">Cerrar sesión</button>
-</mat-toolbar> -->
-<html>
-    <head>
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
-        />
-        <title>WebSocket Chat App</title>
-    </head>
-    <body>
-        <div id="chat-page">
-            <div class="chat-container">
-                <div class="chat-header">
-                    <h2>WebSocket Chat Demo - By Exloz</h2>
-                </div>
-
-                <!-- Área para mostrar mensajes -->
-                <ul class="message-area">
-                    <li
-                        *ngFor="let message of messages"
-                        [ngClass]="{
-                            'event-message':
-                                message.type === 'JOIN' ||
-                                message.type === 'LEAVE',
-                            'chat-message': message.type === 'CHAT'
-                        }"
-                    >
-                        <span>{{ message.sender }}</span
-                        >: {{ message.content }}
-                    </li>
-                </ul>
-
-                <!-- Formulario para enviar mensajes -->
-                <form
-                    id="messageForm"
-                    name="messageForm"
-                    (submit)="sendMessage(); $event.preventDefault()"
-                >
-                    <div class="form-group">
-                        <div class="input-group clearfix">
-                            <input
-                                type="text"
-                                id="message"
-                                name="messageInput"
-                                placeholder="Type a message..."
-                                autocomplete="off"
-                                [(ngModel)]="messageContent"
-                                class="form-control"
-                            />
-                            <button type="submit" class="primary">Send</button>
-                        </div>
-                    </div>
-                </form>
+</mat-toolbar>
+<body>
+    <div id="info-page"></div>
+    <div id="chat-page">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Bingo Gran Buda - Lobby Chat</h2>
             </div>
+
+            <!-- Área para mostrar mensajes -->
+            <ul class="message-area">
+                <li
+                    *ngFor="let message of messages"
+                    [ngClass]="{
+                        'event-message':
+                            message.type === 'JOIN' || message.type === 'LEAVE',
+                        'chat-message': message.type === 'CHAT'
+                    }"
+                >
+                    <span [style.color]="getAvatarColor(message.sender)">{{
+                        message.sender
+                    }}</span
+                    >: {{ message.content }}
+                </li>
+            </ul>
+
+            <!-- Formulario para enviar mensajes -->
+            <form
+                id="messageForm"
+                name="messageForm"
+                (submit)="sendMessage(); $event.preventDefault()"
+            >
+                <div class="form-group">
+                    <div class="input-group clearfix">
+                        <input
+                            type="text"
+                            id="message"
+                            name="messageInput"
+                            placeholder="Type a message..."
+                            autocomplete="off"
+                            [(ngModel)]="messageContent"
+                            class="form-control"
+                        />
+                        <button type="submit" class="primary">Send</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </body>
-</html>
+    </div>
+</body>
