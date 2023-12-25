@@ -1,1 +1,12 @@
-<p>game works!</p>
+<div class="bingo-container">
+    <div class="bingo-grid">
+        <button
+            *ngFor="let item of bingoNumbers"
+            id="btn-{{ item.coordinate }}"
+            (click)="toggleMark(item.coordinate)"
+            class="bingo-cell"
+        >
+            {{ item.number }}
+        </button>
+    </div>
+</div>

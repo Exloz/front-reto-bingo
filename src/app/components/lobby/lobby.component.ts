@@ -14,7 +14,7 @@ export class LobbyComponent {
     isCountdown = false;
     private subscription: Subscription;
     public showStartButton = true;
-    counter = 30;
+    counter = 10;
     countdownMessage: string = '';
     @Output() timerComplete = new EventEmitter<void>();
 
