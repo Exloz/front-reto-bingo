@@ -11,6 +11,7 @@ import { Subscription, first } from 'rxjs';
     styleUrl: './lobby.component.css',
 })
 export class LobbyComponent {
+    isCountdown = false;
     private subscription: Subscription;
     public showStartButton = true;
     counter = 30;
@@ -24,6 +25,7 @@ export class LobbyComponent {
     }
 
     startCountdown() {
+        this.isCountdown = true;
         this.comunicationService.notify();
         this.showStartButton = false;
         const interval = setInterval(() => {
@@ -37,17 +39,20 @@ export class LobbyComponent {
             }
         }, 1000);
     }
-    startCountdownNoNotify() {
-        this.showStartButton = false;
-        const interval = setInterval(() => {
-            this.counter--;
 
-            if (this.counter === 0) {
-                clearInterval(interval);
-                this.timerComplete.emit();
-            } else {
-                this.countdownMessage = `${this.counter} segundos restantes para iniciar`;
-            }
-        }, 1000);
+    startCountdownNoNotify() {
+        if (this.isCountdown == false) {
+            this.showStartButton = false;
+            const interval = setInterval(() => {
+                this.counter--;
+
+                if (this.counter === 0) {
+                    clearInterval(interval);
+                    this.timerComplete.emit();
+                } else {
+                    this.countdownMessage = `${this.counter} segundos restantes para iniciar`;
+                }
+            }, 1000);
+        }
     }
 }

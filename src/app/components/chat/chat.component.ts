@@ -58,6 +58,12 @@ export class ChatComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private comunicationService: CommunicationService
     ) {
+        this.route.queryParams.subscribe((params) => {
+            this.user = {
+                gameSetId: params['gameid'],
+                userName: params['user'],
+            };
+        });
         this.subscription = this.comunicationService.notifierObservable
             .pipe(first())
             .subscribe(() => this.sendStart());
@@ -66,14 +72,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.connect();
         this.createUserOnSet();
-
-        this.route.queryParams.subscribe((params) => {
-            this.user = {
-                gameSetId: params['gameid'],
-                userName: params['user'],
-            };
-            console.log(this.user);
-        });
     }
 
     connect(): void {
@@ -160,15 +158,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     createUserOnSet() {
         this.http
             .post<User>('http://localhost:8080/api/v1/user/create', this.user)
-            .subscribe(
-                (responseData) => {
-                    this.userResponse = responseData;
-                    console.log(this.userResponse);
-                },
-                (err) => {
-                    this.error = err.message;
-                }
-            );
+            .subscribe({
+                next: (user) => (this.userResponse = user),
+                error: (error) => console.error(error),
+                complete: () => {},
+            });
     }
 
     sendStart(): void {
