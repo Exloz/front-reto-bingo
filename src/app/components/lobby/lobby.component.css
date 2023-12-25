@@ -1,0 +1,33 @@
+.welcome-text {
+    text-align: center;
+    margin-top: 50px;
+}
+.big-text {
+    font-size: 32px;
+    color: #ff5733;
+    font-weight: bold;
+}
+.small-text {
+    display: block;
+    font-size: 24px;
+    color: #33c4ff;
+}
+.start-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.start-button:hover {
+    background-color: #45a049;
+}
+
+.counter {
+    display: block;
+    font-size: 30px;
+    color: #ff3355;
+}

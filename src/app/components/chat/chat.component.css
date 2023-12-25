@@ -302,9 +302,11 @@ mat-toolbar {
     width: 50%;
     padding: 10px;
     box-sizing: border-box;
+    float: right;
 }
 #chat-page {
     width: 50%;
     padding: 10px;
     box-sizing: border-box;
+    float: left;
 }

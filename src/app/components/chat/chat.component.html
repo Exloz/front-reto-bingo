@@ -1,10 +1,16 @@
 <mat-toolbar color="accent">
-    <span>Lobby Bingo Game</span>
+    <span>BINGO GRAN BUDA</span>
 
     <button mat-flat-button (click)="logOut()">Cerrar sesión</button>
 </mat-toolbar>
 <body>
-    <div id="info-page"></div>
+    <div id="info-page">
+        <app-lobby
+            *ngIf="!showGameComponent"
+            (timerComplete)="onTimerComplete()"
+        ></app-lobby>
+        <app-game *ngIf="showGameComponent"></app-game>
+    </div>
     <div id="chat-page">
         <div class="chat-container">
             <div class="chat-header">
@@ -40,12 +46,12 @@
                             type="text"
                             id="message"
                             name="messageInput"
-                            placeholder="Type a message..."
+                            placeholder="Escribe un mensaje..."
                             autocomplete="off"
                             [(ngModel)]="messageContent"
                             class="form-control"
                         />
-                        <button type="submit" class="primary">Send</button>
+                        <button type="submit" class="primary">Enviar</button>
                     </div>
                 </div>
             </form>

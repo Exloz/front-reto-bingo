@@ -7,24 +7,33 @@ import SockJS from 'sockjs-client';
 import { AuthService } from '../../shared/services/auth.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { LobbyComponent } from '../lobby/lobby.component';
+import { GameComponent } from '../game/game.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { User } from '../../shared/interfaces/user';
 
 @Component({
     selector: 'app-chat',
     standalone: true,
     imports: [
+        LobbyComponent,
         FormsModule,
         CommonModule,
         MatSlideToggleModule,
         MatToolbarModule,
+        GameComponent,
+        HttpClientModule,
     ],
     templateUrl: './chat.component.html',
     styleUrl: './chat.component.css',
 })
 export class ChatComponent implements OnInit {
+    public showGameComponent = false;
     private _router = inject(Router);
     private authservice = inject(AuthService);
     private stompClient!: Client;
     public userName: string = '';
+    public gameSetId: string = '';
     public messageContent: string = '';
     public messages: any[] = [];
     private colors: string[] = [
@@ -37,14 +46,22 @@ export class ChatComponent implements OnInit {
         '#FF9800',
         '#39bbb0',
     ];
+    user: User | null = null;
+    error: any;
+    userResponse: User | null = null;
 
-    constructor(private route: ActivatedRoute) {}
+    constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
     ngOnInit(): void {
         this.connect();
+        this.createUserOnSet();
 
         this.route.queryParams.subscribe((params) => {
-            this.userName = params['user'];
+            this.user = {
+                gameSetId: params['gameid'],
+                userName: params['user'],
+            };
+            console.log(this.user);
         });
     }
 
@@ -70,14 +87,14 @@ export class ChatComponent implements OnInit {
         );
         this.stompClient.publish({
             destination: '/app/chat.addUser',
-            body: JSON.stringify({ sender: this.userName, type: 'JOIN' }),
+            body: JSON.stringify({ sender: this.user?.userName, type: 'JOIN' }),
         });
     }
 
     sendMessage(): void {
         if (this.messageContent && this.stompClient.active) {
             const chatMessage = {
-                sender: this.userName,
+                sender: this.user?.userName,
                 content: this.messageContent,
                 type: 'CHAT',
             };
@@ -120,5 +137,23 @@ export class ChatComponent implements OnInit {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    onTimerComplete() {
+        this.showGameComponent = true;
+    }
+
+    createUserOnSet() {
+        this.http
+            .post<User>('http://localhost:8080/api/v1/user/create', this.user)
+            .subscribe(
+                (responseData) => {
+                    this.userResponse = responseData;
+                    console.log(this.userResponse);
+                },
+                (err) => {
+                    this.error = err.message;
+                }
+            );
     }
 }
