@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
     selector: 'app-chat',
@@ -12,6 +14,8 @@ import SockJS from 'sockjs-client';
     styleUrl: './chat.component.css',
 })
 export class ChatComponent implements OnInit {
+    private _router = inject(Router);
+    private authservice = inject(AuthService);
     private stompClient!: Client;
     public userName: string = 'Exloz';
     public messageContent: string = '';
@@ -93,5 +97,14 @@ export class ChatComponent implements OnInit {
         }
         const index = Math.abs(hash % this.colors.length);
         return this.colors[index];
+    }
+
+    async logOut(): Promise<void> {
+        try {
+            await this.authservice.logOut();
+            this._router.navigateByUrl('/auth/log-in');
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

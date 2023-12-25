@@ -284,3 +284,8 @@ button.accent {
         font-size: 1.1em;
     }
 }
+
+mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+}
