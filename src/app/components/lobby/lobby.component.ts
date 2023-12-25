@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
+import { CommunicationService } from '../../shared/services/comunication.service';
+import { Subscription, first } from 'rxjs';
 
 @Component({
     selector: 'app-lobby',
@@ -9,14 +11,33 @@ import { Component, EventEmitter, Output } from '@angular/core';
     styleUrl: './lobby.component.css',
 })
 export class LobbyComponent {
+    private subscription: Subscription;
     public showStartButton = true;
     counter = 30;
     countdownMessage: string = '';
     @Output() timerComplete = new EventEmitter<void>();
 
-    constructor() {}
+    constructor(private comunicationService: CommunicationService) {
+        this.subscription = this.comunicationService.notifierObservable
+            .pipe(first())
+            .subscribe(() => this.startCountdownNoNotify());
+    }
 
     startCountdown() {
+        this.comunicationService.notify();
+        this.showStartButton = false;
+        const interval = setInterval(() => {
+            this.counter--;
+
+            if (this.counter === 0) {
+                clearInterval(interval);
+                this.timerComplete.emit();
+            } else {
+                this.countdownMessage = `${this.counter} segundos restantes para iniciar`;
+            }
+        }, 1000);
+    }
+    startCountdownNoNotify() {
         this.showStartButton = false;
         const interval = setInterval(() => {
             this.counter--;

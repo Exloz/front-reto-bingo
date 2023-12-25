@@ -23,7 +23,9 @@
                     *ngFor="let message of messages"
                     [ngClass]="{
                         'event-message':
-                            message.type === 'JOIN' || message.type === 'LEAVE',
+                            message.type === 'JOIN' ||
+                            message.type === 'LEAVE' ||
+                            message.type === 'START',
                         'chat-message': message.type === 'CHAT'
                     }"
                 >

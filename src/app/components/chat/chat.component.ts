@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Client } from '@stomp/stompjs';
@@ -11,6 +11,8 @@ import { LobbyComponent } from '../lobby/lobby.component';
 import { GameComponent } from '../game/game.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { User } from '../../shared/interfaces/user';
+import { Subscription, first } from 'rxjs';
+import { CommunicationService } from '../../shared/services/comunication.service';
 
 @Component({
     selector: 'app-chat',
@@ -27,7 +29,7 @@ import { User } from '../../shared/interfaces/user';
     templateUrl: './chat.component.html',
     styleUrl: './chat.component.css',
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
     public showGameComponent = false;
     private _router = inject(Router);
     private authservice = inject(AuthService);
@@ -49,8 +51,17 @@ export class ChatComponent implements OnInit {
     user: User | null = null;
     error: any;
     userResponse: User | null = null;
+    private subscription: Subscription;
 
-    constructor(private route: ActivatedRoute, private http: HttpClient) {}
+    constructor(
+        private route: ActivatedRoute,
+        private http: HttpClient,
+        private comunicationService: CommunicationService
+    ) {
+        this.subscription = this.comunicationService.notifierObservable
+            .pipe(first())
+            .subscribe(() => this.sendStart());
+    }
 
     ngOnInit(): void {
         this.connect();
@@ -115,6 +126,9 @@ export class ChatComponent implements OnInit {
             message.content = ' ingreso al bingo!';
         } else if (message.type === 'LEAVE') {
             message.content = ' abandono!';
+        } else if (message.type === 'START') {
+            this.comunicationService.notify();
+            message.content = ' inicio el juego!';
         }
         console.log(message);
 
@@ -155,5 +169,19 @@ export class ChatComponent implements OnInit {
                     this.error = err.message;
                 }
             );
+    }
+
+    sendStart(): void {
+        this.stompClient.publish({
+            destination: '/app/chat.startGame',
+            body: JSON.stringify({
+                sender: this.user?.userName,
+                type: 'START',
+            }),
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe;
     }
 }
