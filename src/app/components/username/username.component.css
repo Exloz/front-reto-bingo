@@ -1,15 +1,38 @@
-/* Estilo para el contenedor del cuerpo de la página */
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0; /* Color de fondo suave */
-    font-family: Arial, sans-serif; /* Tipo de letra genérico y moderno */
+.welcome-message {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: #ff5733;
+    margin-top: 200px;
+    margin-bottom: 10px;
 }
 
-/* Estilo general del formulario */
+.name-prompt {
+    text-align: center;
+    font-size: 20px;
+    color: #337ab7;
+    margin-bottom: 20px;
+}
+
+.chat-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: auto;
+}
+
+.chat-container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 300px;
+    height: auto;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -22,7 +45,6 @@ form {
     max-width: 300px;
 }
 
-/* Estilo para el campo de entrada */
 input[type="text"] {
     width: 100%;
     padding: 8px;
@@ -37,7 +59,6 @@ input[type="text"]:focus {
     outline: none;
 }
 
-/* Estilo para el botón */
 button {
     padding: 10px 15px;
     border: none;
@@ -52,7 +73,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Pequeño ajuste para mejorar la legibilidad */
 input[type="text"]::placeholder {
     color: #aaa;
 }

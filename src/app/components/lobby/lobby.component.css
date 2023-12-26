@@ -1,6 +1,6 @@
 .welcome-text {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 60px;
 }
 .big-text {
     font-size: 32px;
@@ -8,6 +8,8 @@
     font-weight: bold;
 }
 .small-text {
+    margin: auto;
+    margin-top: 60px;
     display: block;
     font-size: 24px;
     color: #33c4ff;
@@ -27,6 +29,7 @@
 }
 
 .counter {
+    margin-top: 60px;
     display: block;
     font-size: 30px;
     color: #ff3355;

@@ -37,7 +37,6 @@ export class UserName implements OnInit {
             .subscribe(
                 (responseData) => {
                     this.gameSet = responseData;
-                    console.log(this.gameSet);
                 },
                 (err) => {
                     this.error = err.message;

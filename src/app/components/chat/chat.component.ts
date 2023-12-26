@@ -14,6 +14,7 @@ import { User } from '../../shared/interfaces/user';
 import { Subscription, first } from 'rxjs';
 import { CommunicationService } from '../../shared/services/comunication.service';
 import { Communication2Service } from '../../shared/services/comunication2.service';
+import { Communication3Service } from '../../shared/services/comunication3.service';
 
 @Component({
     selector: 'app-chat',
@@ -39,6 +40,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     public gameSetId: string = '';
     public messageContent: string = '';
     public messages: any[] = [];
+    ballotMessages: any[] = [];
     private colors: string[] = [
         '#2196F3',
         '#32c787',
@@ -53,12 +55,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     error: any;
     userResponse: User | null = null;
     private subscription: Subscription;
+    private subscription3: Subscription;
 
     constructor(
         private route: ActivatedRoute,
         private http: HttpClient,
         private comunicationService: CommunicationService,
-        private comunication2Service: Communication2Service
+        private comunication2Service: Communication2Service,
+        private comunication3Service: Communication3Service
     ) {
         this.route.queryParams.subscribe((params) => {
             this.user = {
@@ -69,6 +73,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.subscription = this.comunicationService.notifierObservable
             .pipe(first())
             .subscribe(() => this.sendStart());
+
+        this.subscription3 = this.comunicationService.notifierObservable
+            .pipe(first())
+            .subscribe(() =>
+                setTimeout(() => {
+                    this.sendStartBallot();
+                }, 5000)
+            );
     }
 
     ngOnInit(): void {
@@ -82,7 +94,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.stompClient = new Client({
             webSocketFactory: () => socket,
         });
-        console.log(socket);
 
         this.stompClient.onConnect = (frame: any) => {
             this.onConnected(frame);
@@ -129,10 +140,35 @@ export class ChatComponent implements OnInit, OnDestroy {
         } else if (message.type === 'START') {
             this.comunication2Service.notify2();
             message.content = ' inicio el juego!';
+        } else if (message.type === 'BALLOT') {
+            message.content = this.letterRange(message.content);
+            this.ballotMessages.push(message);
         }
-        console.log(message);
 
         this.messages.push(message);
+    }
+
+    private letterRange(message: number): string {
+        let number = message;
+        let messageReturn = '';
+        let prefix;
+
+        if (number >= 1 && number <= 15) {
+            prefix = 'B';
+        } else if (number >= 16 && number <= 30) {
+            prefix = 'I';
+        } else if (number >= 31 && number <= 45) {
+            prefix = 'N';
+        } else if (number >= 46 && number <= 60) {
+            prefix = 'G';
+        } else if (number >= 61 && number <= 75) {
+            prefix = 'O';
+        }
+
+        if (prefix) {
+            messageReturn = prefix + message;
+        }
+        return messageReturn;
     }
 
     getAvatarColor(messageSender: string): string {
@@ -177,7 +213,18 @@ export class ChatComponent implements OnInit, OnDestroy {
         });
     }
 
+    sendStartBallot(): void {
+        this.stompClient.publish({
+            destination: '/app/chat.generateBallot',
+            body: JSON.stringify({
+                sender: this.user?.userName,
+                type: 'BALLOT',
+            }),
+        });
+    }
+
     ngOnDestroy(): void {
         this.subscription.unsubscribe;
+        this.subscription3.unsubscribe;
     }
 }

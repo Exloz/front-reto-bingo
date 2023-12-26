@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { UserName } from '../username/username.component';
 import { ActivatedRoute } from '@angular/router';
+import { Communication3Service } from '../../shared/services/comunication3.service';
+import { CellList } from '../../shared/interfaces/cellList';
 
 @Component({
     selector: 'app-game',
@@ -13,10 +15,16 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class GameComponent implements OnInit {
     bingoNumbers: Array<{ coordinate: number; number: number }> = [];
+    marketNumbers: Array<{ coordinate: number; number: number }> = [];
     isActive: boolean = false;
     userName: String | null = null;
+    checkedUser: any;
 
-    constructor(private http: HttpClient, private route: ActivatedRoute) {}
+    constructor(
+        private http: HttpClient,
+        private route: ActivatedRoute,
+        private comunication3Service: Communication3Service
+    ) {}
 
     ngOnInit(): void {
         this.route.queryParams.subscribe((params) => {
@@ -32,22 +40,12 @@ export class GameComponent implements OnInit {
                 (response) => {
                     this.isActive = response.isActive;
                     this.bingoNumbers = response.cellList;
-
-                    console.log(response);
                 },
                 (error) => {
                     console.error(error);
                 }
             );
-    }
-
-    toggleMark(coordinate: number): void {
-        let button = document.getElementById(`btn-${coordinate}`);
-        if (button) {
-            button.classList.toggle('marked');
-        } else {
-            console.error(`Button with id btn-${coordinate} not found`);
-        }
+        this.comunication3Service.notify3();
     }
 
     getNumbersForColumn(
@@ -58,12 +56,41 @@ export class GameComponent implements OnInit {
         );
     }
 
+    toggleMark(coordinate: number): void {
+        let button = document.getElementById(`btn-${coordinate}`);
+        if (button) {
+            button.classList.toggle('marked');
+        }
+    }
+
     getMarkedNumbers(): Array<{ coordinate: number; number: number }> {
         return this.bingoNumbers.filter((item) => {
             let button = document.getElementById(`btn-${item.coordinate}`);
-            return button && button.classList.contains('marked');
+            return button?.classList.contains('marked');
         });
     }
 
-    checkUserWinner() {}
+    checkUserWinner() {
+        const dataToSend = {
+            cellList: this.marketNumbers,
+        };
+        this.http
+            .post<CellList>(
+                'http://localhost:8080/api/v1/check/winner',
+                dataToSend
+            )
+            .subscribe({
+                next: (check) => {
+                    this.checkedUser = check;
+                    console.log(this.checkedUser);
+                },
+                error: (error) => console.error(error),
+                complete: () => {},
+            });
+    }
+
+    showMarketNumbers() {
+        this.marketNumbers = this.getMarkedNumbers();
+        this.checkUserWinner();
+    }
 }

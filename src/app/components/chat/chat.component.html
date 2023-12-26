@@ -3,24 +3,23 @@
 
     <button mat-flat-button (click)="logOut()">Cerrar sesión</button>
 </mat-toolbar>
-<body>
-    <div id="info-page">
-        <app-lobby
-            *ngIf="!showGameComponent"
-            (timerComplete)="onTimerComplete()"
-        ></app-lobby>
-        <app-game *ngIf="showGameComponent"></app-game>
-    </div>
-    <div id="chat-page">
-        <div class="chat-container">
-            <div class="chat-header">
-                <h2>Bingo Gran Buda - Lobby Chat</h2>
-            </div>
+<div id="info-page">
+    <app-lobby
+        *ngIf="!showGameComponent"
+        (timerComplete)="onTimerComplete()"
+    ></app-lobby>
+    <app-game *ngIf="showGameComponent"></app-game>
+</div>
+<div id="chat-page">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Bingo Gran Buda - Lobby Chat</h2>
+        </div>
 
-            <!-- Área para mostrar mensajes -->
-            <ul class="message-area">
+        <ul class="message-area">
+            <ng-container *ngFor="let message of messages">
                 <li
-                    *ngFor="let message of messages"
+                    *ngIf="message.type !== 'BALLOT'"
                     [ngClass]="{
                         'event-message':
                             message.type === 'JOIN' ||
@@ -34,29 +33,35 @@
                     }}</span
                     >: {{ message.content }}
                 </li>
-            </ul>
+            </ng-container>
+        </ul>
 
-            <!-- Formulario para enviar mensajes -->
-            <form
-                id="messageForm"
-                name="messageForm"
-                (submit)="sendMessage(); $event.preventDefault()"
-            >
-                <div class="form-group">
-                    <div class="input-group clearfix">
-                        <input
-                            type="text"
-                            id="message"
-                            name="messageInput"
-                            placeholder="Escribe un mensaje..."
-                            autocomplete="off"
-                            [(ngModel)]="messageContent"
-                            class="form-control"
-                        />
-                        <button type="submit" class="primary">Enviar</button>
-                    </div>
+        <form
+            id="messageForm"
+            name="messageForm"
+            (submit)="sendMessage(); $event.preventDefault()"
+        >
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <input
+                        type="text"
+                        id="message"
+                        name="messageInput"
+                        placeholder="Escribe un mensaje..."
+                        autocomplete="off"
+                        [(ngModel)]="messageContent"
+                        class="form-control"
+                    />
+                    <button type="submit" class="primary">Enviar</button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-</body>
+</div>
+<div id="ballot-messages">
+    <ul class="ballot-message-area">
+        <li *ngFor="let ballotMessage of ballotMessages">
+            {{ ballotMessage.content }}
+        </li>
+    </ul>
+</div>

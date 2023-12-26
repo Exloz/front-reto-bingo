@@ -9,13 +9,13 @@ import { Communication2Service } from '../../shared/services/comunication2.servi
     standalone: true,
     imports: [CommonModule],
     templateUrl: './lobby.component.html',
-    styleUrl: './lobby.component.css',
+    styleUrls: ['./lobby.component.css'],
 })
 export class LobbyComponent implements OnDestroy {
     isCountdown = false;
     private subscription: Subscription;
     public showStartButton = true;
-    counter = 3;
+    counter = 5;
     countdownMessage: string = '';
     @Output() timerComplete = new EventEmitter<void>();
 
