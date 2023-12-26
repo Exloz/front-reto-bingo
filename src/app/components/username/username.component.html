@@ -1,0 +1,15 @@
+<div class="welcome-message">BIENVENIDO AL BINGO GRAN BUDA</div>
+<div class="name-prompt">POR FAVOR INGRESA TU NOMBRE</div>
+
+<div class="chat-container">
+    <form (ngSubmit)="onSubmit()">
+        <input
+            type="text"
+            [(ngModel)]="userName"
+            name="userName"
+            placeholder="Enter your username..."
+            required
+        />
+        <button type="submit">Enter</button>
+    </form>
+</div>

@@ -1,0 +1,18 @@
+<div class="welcome-text">
+    <span class="big-text">
+        Bienvenido al espectacular
+        <span style="color: #d4ac0d">Bingo Gran Buda</span>
+    </span>
+    <div class="buda">
+        <img src="assets/buda.png" width="400" height="400" />
+    </div>
+    <span class="small-text">Espera más jugadores para comenzar</span>
+    <button
+        class="start-button"
+        *ngIf="showStartButton"
+        (click)="startCountdown()"
+    >
+        EMPEZAR JUEGO
+    </button>
+    <div class="counter">{{ countdownMessage }}</div>
+</div>

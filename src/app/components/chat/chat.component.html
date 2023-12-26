@@ -1,0 +1,67 @@
+<mat-toolbar color="accent">
+    <span>BINGO GRAN BUDA</span>
+
+    <button mat-flat-button (click)="logOut()">Cerrar sesión</button>
+</mat-toolbar>
+<div id="info-page">
+    <app-lobby
+        *ngIf="!showGameComponent"
+        (timerComplete)="onTimerComplete()"
+    ></app-lobby>
+    <app-game *ngIf="showGameComponent"></app-game>
+</div>
+<div id="chat-page">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Bingo Gran Buda - Lobby Chat</h2>
+        </div>
+
+        <ul class="message-area">
+            <ng-container *ngFor="let message of messages">
+                <li
+                    *ngIf="message.type !== 'BALLOT'"
+                    [ngClass]="{
+                        'event-message':
+                            message.type === 'JOIN' ||
+                            message.type === 'LEAVE' ||
+                            message.type === 'START',
+                        'chat-message': message.type === 'CHAT'
+                    }"
+                >
+                    <span [style.color]="getAvatarColor(message.sender)">{{
+                        message.sender
+                    }}</span
+                    >: {{ message.content }}
+                </li>
+            </ng-container>
+        </ul>
+
+        <form
+            id="messageForm"
+            name="messageForm"
+            (submit)="sendMessage(); $event.preventDefault()"
+        >
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <input
+                        type="text"
+                        id="message"
+                        name="messageInput"
+                        placeholder="Escribe un mensaje..."
+                        autocomplete="off"
+                        [(ngModel)]="messageContent"
+                        class="form-control"
+                    />
+                    <button type="submit" class="primary">Enviar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="ballot-messages">
+    <ul class="ballot-message-area">
+        <li *ngFor="let ballotMessage of ballotMessages">
+            {{ ballotMessage.content }}
+        </li>
+    </ul>
+</div>
