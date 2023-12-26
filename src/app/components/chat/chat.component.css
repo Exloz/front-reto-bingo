@@ -222,11 +222,7 @@ mat-toolbar {
     float: left;
 }
 
-#ballot-messages {
-    margin-top: 20px;
-}
-
-.ballot-message {
+.ballot-messages {
     background-color: blue;
     color: white;
     border-radius: 50%;
@@ -237,4 +233,26 @@ mat-toolbar {
     line-height: 50px;
     margin: 10px;
     display: inline-block;
+}
+
+#ballot-messages {
+    display: flex; /* Asegura una disposición horizontal */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan si no caben en una sola línea */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente */
+    margin-top: 20px; /* Espacio entre el chat-page y este contenedor */
+    padding: 10px; /* Espacio interior para visibilidad */
+}
+
+.ballot-message-area li {
+    display: inline-flex; /* Cambiado a inline-flex para una mejor disposición */
+    align-items: center; /* Centra el contenido de cada elemento de la lista verticalmente */
+    margin-right: 10px; /* Espacio entre los elementos de la lista */
+    /* Resto de estilos para .ballot-message */
+}
+
+/* Asegurar la visibilidad de los elementos de la lista */
+.ballot-message-area li {
+    color: white; /* Color del texto */
+    background-color: blue; /* Fondo de cada elemento de la lista */
 }

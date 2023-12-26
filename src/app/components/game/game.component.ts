@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { UserName } from '../username/username.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Communication3Service } from '../../shared/services/comunication3.service';
 import { CellList } from '../../shared/interfaces/cellList';
+import Swal from 'sweetalert2';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
 
 @Component({
     selector: 'app-game',
@@ -14,6 +16,7 @@ import { CellList } from '../../shared/interfaces/cellList';
     styleUrl: './game.component.css',
 })
 export class GameComponent implements OnInit {
+    private stompClient: any;
     bingoNumbers: Array<{ coordinate: number; number: number }> = [];
     marketNumbers: Array<{ coordinate: number; number: number }> = [];
     isActive: boolean = false;
@@ -21,12 +24,14 @@ export class GameComponent implements OnInit {
     checkedUser: any;
 
     constructor(
+        private router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
         private comunication3Service: Communication3Service
     ) {}
 
     ngOnInit(): void {
+        this.connect();
         this.route.queryParams.subscribe((params) => {
             this.userName = params['user'];
         });
@@ -46,6 +51,18 @@ export class GameComponent implements OnInit {
                 }
             );
         this.comunication3Service.notify3();
+    }
+
+    connect() {
+        const socket = new SockJS('http://localhost:8080/chat-socket');
+        this.stompClient = Stomp.over(socket);
+        this.stompClient.connect({}, (frame: any) => {
+            this.stompClient.subscribe('/topic/loss', (message: any) => {
+                if (message.body) {
+                    this.showLossPopup();
+                }
+            });
+        });
     }
 
     getNumbersForColumn(
@@ -82,7 +99,11 @@ export class GameComponent implements OnInit {
             .subscribe({
                 next: (check) => {
                     this.checkedUser = check;
-                    console.log(this.checkedUser);
+                    if (check) {
+                        this.showPopup('¡Has ganado', 'success');
+                    } else {
+                        this.showPopup('Has perdido.', 'error');
+                    }
                 },
                 error: (error) => console.error(error),
                 complete: () => {},
@@ -92,5 +113,31 @@ export class GameComponent implements OnInit {
     showMarketNumbers() {
         this.marketNumbers = this.getMarkedNumbers();
         this.checkUserWinner();
+    }
+
+    showPopup(message: string, icon: 'success' | 'error'): void {
+        Swal.fire({
+            title: message,
+            icon: icon,
+            confirmButtonText: 'Ok',
+        }).then((result: { isConfirmed: any }) => {
+            if (result.isConfirmed) {
+                this.router.navigate(['/login']).then(() => {
+                    location.reload();
+                });
+            }
+        });
+    }
+
+    showLossPopup() {
+        Swal.fire({
+            title: 'Has perdido, alguien más ganó.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.router.navigate(['/login']);
+            }
+        });
     }
 }

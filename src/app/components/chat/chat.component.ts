@@ -136,7 +136,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (message.type === 'JOIN') {
             message.content = ' ingreso al bingo!';
         } else if (message.type === 'LEAVE') {
-            message.content = ' abandono!';
+            message.content = ' ha sido descalificado!';
         } else if (message.type === 'START') {
             this.comunication2Service.notify2();
             message.content = ' inicio el juego!';
