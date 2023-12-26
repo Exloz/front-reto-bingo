@@ -1,12 +1,25 @@
 <div class="bingo-container">
-    <div class="bingo-grid">
-        <button
-            *ngFor="let item of bingoNumbers"
-            id="btn-{{ item.coordinate }}"
-            (click)="toggleMark(item.coordinate)"
-            class="bingo-cell"
-        >
-            {{ item.number }}
-        </button>
+    <div class="bingo-headers">
+        <div class="header" *ngFor="let letter of ['B', 'I', 'N', 'G', 'O']">
+            {{ letter }}
+        </div>
     </div>
+    <div class="bingo-grid">
+        <div class="bingo-column" *ngFor="let i of [0, 1, 2, 3, 4]">
+            <button
+                *ngFor="let item of getNumbersForColumn(i)"
+                id="btn-{{ item.coordinate }}"
+                (click)="toggleMark(item.coordinate)"
+                class="bingo-cell"
+            >
+                <ng-container *ngIf="item.coordinate !== 13; else X">
+                    {{ item.number }}
+                </ng-container>
+                <ng-template #X>
+                    <b>X</b>
+                </ng-template>
+            </button>
+        </div>
+    </div>
+    <button class="bingo-button">BINGO!</button>
 </div>

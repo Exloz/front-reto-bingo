@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { CommunicationService } from '../../shared/services/comunication.service';
 import { Subscription, first } from 'rxjs';
+import { Communication2Service } from '../../shared/services/comunication2.service';
 
 @Component({
     selector: 'app-lobby',
@@ -10,16 +11,19 @@ import { Subscription, first } from 'rxjs';
     templateUrl: './lobby.component.html',
     styleUrl: './lobby.component.css',
 })
-export class LobbyComponent {
+export class LobbyComponent implements OnDestroy {
     isCountdown = false;
     private subscription: Subscription;
     public showStartButton = true;
-    counter = 10;
+    counter = 3;
     countdownMessage: string = '';
     @Output() timerComplete = new EventEmitter<void>();
 
-    constructor(private comunicationService: CommunicationService) {
-        this.subscription = this.comunicationService.notifierObservable
+    constructor(
+        private comunicationService: CommunicationService,
+        private comunication2Service: Communication2Service
+    ) {
+        this.subscription = this.comunication2Service.notifierObservable2
             .pipe(first())
             .subscribe(() => this.startCountdownNoNotify());
     }
@@ -54,5 +58,8 @@ export class LobbyComponent {
                 }
             }, 1000);
         }
+    }
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe;
     }
 }

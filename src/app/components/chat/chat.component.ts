@@ -13,6 +13,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { User } from '../../shared/interfaces/user';
 import { Subscription, first } from 'rxjs';
 import { CommunicationService } from '../../shared/services/comunication.service';
+import { Communication2Service } from '../../shared/services/comunication2.service';
 
 @Component({
     selector: 'app-chat',
@@ -56,7 +57,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
         private http: HttpClient,
-        private comunicationService: CommunicationService
+        private comunicationService: CommunicationService,
+        private comunication2Service: Communication2Service
     ) {
         this.route.queryParams.subscribe((params) => {
             this.user = {
@@ -125,7 +127,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         } else if (message.type === 'LEAVE') {
             message.content = ' abandono!';
         } else if (message.type === 'START') {
-            this.comunicationService.notify();
+            this.comunication2Service.notify2();
             message.content = ' inicio el juego!';
         }
         console.log(message);

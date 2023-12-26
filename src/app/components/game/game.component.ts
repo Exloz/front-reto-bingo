@@ -49,4 +49,21 @@ export class GameComponent implements OnInit {
             console.error(`Button with id btn-${coordinate} not found`);
         }
     }
+
+    getNumbersForColumn(
+        columnIndex: number
+    ): Array<{ coordinate: number; number: number }> {
+        return this.bingoNumbers.filter(
+            (item) => Math.floor((item.coordinate - 1) / 5) === columnIndex
+        );
+    }
+
+    getMarkedNumbers(): Array<{ coordinate: number; number: number }> {
+        return this.bingoNumbers.filter((item) => {
+            let button = document.getElementById(`btn-${item.coordinate}`);
+            return button && button.classList.contains('marked');
+        });
+    }
+
+    checkUserWinner() {}
 }
