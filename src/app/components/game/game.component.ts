@@ -36,6 +36,12 @@ export class GameComponent implements OnInit {
             this.userName = params['user'];
         });
 
+        this.createBingoTable();
+
+        this.comunication3Service.notify3();
+    }
+
+    createBingoTable() {
         this.http
             .post<any>(
                 `http://localhost:8080/api/v1/gameset/create/bingotable/${this.userName}`,
@@ -50,18 +56,21 @@ export class GameComponent implements OnInit {
                     console.error(error);
                 }
             );
-        this.comunication3Service.notify3();
     }
 
     connect() {
-        const socket = new SockJS('http://localhost:8080/chat-socket');
+        const socket = new SockJS('http://localhost:8080/websocket');
         this.stompClient = Stomp.over(socket);
-        this.stompClient.connect({}, (frame: any) => {
-            this.stompClient.subscribe('/topic/loss', (message: any) => {
-                if (message.body) {
-                    this.showLossPopup();
+
+        this.stompClient.connect({}, () => {
+            this.stompClient.subscribe(
+                '/topic/loss',
+                (message: { body: any }) => {
+                    if (message.body) {
+                        this.showLossPopup();
+                    }
                 }
-            });
+            );
         });
     }
 
@@ -100,13 +109,17 @@ export class GameComponent implements OnInit {
                 next: (check) => {
                     this.checkedUser = check;
                     if (check) {
-                        this.showPopup('¡Has ganado', 'success');
+                        this.showPopup('¡Has ganado!', 'success');
+                        this.http
+                            .post('http://localhost:8080/api/v1/notify/win', {
+                                user: this.userName,
+                            })
+                            .subscribe();
                     } else {
                         this.showPopup('Has perdido.', 'error');
                     }
                 },
                 error: (error) => console.error(error),
-                complete: () => {},
             });
     }
 
@@ -122,7 +135,7 @@ export class GameComponent implements OnInit {
             confirmButtonText: 'Ok',
         }).then((result: { isConfirmed: any }) => {
             if (result.isConfirmed) {
-                this.router.navigate(['/login']).then(() => {
+                this.router.navigate(['/username']).then(() => {
                     location.reload();
                 });
             }

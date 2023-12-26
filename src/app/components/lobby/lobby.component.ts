@@ -15,7 +15,7 @@ export class LobbyComponent implements OnDestroy {
     isCountdown = false;
     private subscription: Subscription;
     public showStartButton = true;
-    counter = 5;
+    counter = 30;
     countdownMessage: string = '';
     @Output() timerComplete = new EventEmitter<void>();
 

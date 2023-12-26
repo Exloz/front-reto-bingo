@@ -29,10 +29,4 @@ export const routes: Routes = [
         path: 'signup',
         component: SignupComponent,
     },
-    // {
-    //     // path: 'home/:gameSetId',
-    //     path: 'home',
-    //     component: ChatComponent,
-    //     canActivate: [authGuard],
-    // },
 ];
