@@ -79,7 +79,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             .subscribe(() =>
                 setTimeout(() => {
                     this.sendStartBallot();
-                }, 5000)
+                }, 35000)
             );
     }
 
