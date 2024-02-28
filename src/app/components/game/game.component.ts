@@ -154,3 +154,5 @@ export class GameComponent implements OnInit {
         });
     }
 }
+
+//Comentario xd
